@@ -76,7 +76,7 @@ public class UserAddServlet extends HttpServlet {
         String password = req.getParameter("password");
         String name = req.getParameter("name");
         Double amount = Double.parseDouble(req.getParameter("amount"));
-
+//hey!
         return new User(login, password, name, amount);
 
     }
