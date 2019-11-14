@@ -1,4 +1,4 @@
-package app.dao;
+package app.dao.executor;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

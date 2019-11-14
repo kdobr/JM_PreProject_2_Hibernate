@@ -2,6 +2,7 @@ package app.servlets;
 
 import app.enties.User;
 import app.service.UserService;
+import app.utils.ConnectionProvider;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,7 +16,7 @@ import java.sql.SQLException;
 @WebServlet("/userUpdate")
 public class UserUpdateServlet extends HttpServlet {
 
-    private UserService service = new UserService();
+    private UserService service = UserService.getUserService(ConnectionProvider.getMysqlConnection());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -25,18 +26,14 @@ public class UserUpdateServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            User user = getUser(req, resp);
-            if (service.updateUser(user)) {
-                req.setAttribute("UpdateUserLogin", user.getLogin());
-                req.setAttribute("User", user);
-            } else {
-                req.setAttribute("wrongRequest", "login/password not valid");
-            }
-            doGet(req, resp);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        User user = getUser(req, resp);
+        if (service.updateUser(user)) {
+            req.setAttribute("UpdateUserLogin", user.getLogin());
+            req.setAttribute("User", user);
+        } else {
+            req.setAttribute("wrongRequest", "login/password not valid");
         }
+        doGet(req, resp);
     }
 
     protected User getUser(HttpServletRequest req, HttpServletResponse resp) {

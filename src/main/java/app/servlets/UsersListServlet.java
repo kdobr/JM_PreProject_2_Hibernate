@@ -2,6 +2,7 @@ package app.servlets;
 
 import app.enties.User;
 import app.service.UserService;
+import app.utils.ConnectionProvider;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -17,21 +18,16 @@ import java.util.List;
 @WebServlet("/list")
 public class UsersListServlet extends HttpServlet {
 
-    private UserService service = new UserService();
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private UserService service = UserService.getUserService(ConnectionProvider.getMysqlConnection());
 
-    }
-
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            List<User> list = service.getUsersList();
-            req.setAttribute("users", list);
-            RequestDispatcher dispatcher = req.getRequestDispatcher("views/list.jsp");
-            dispatcher.forward(req, resp);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<User> users = service.getUsersList();
+        request.setAttribute("users", users);
+        request.getRequestDispatcher("views/list.jsp").forward(request, response);
 
     }
+
+
 }

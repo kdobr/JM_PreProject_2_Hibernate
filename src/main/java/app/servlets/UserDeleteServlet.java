@@ -2,6 +2,7 @@ package app.servlets;
 
 import app.enties.User;
 import app.service.UserService;
+import app.utils.ConnectionProvider;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,7 +16,7 @@ import java.sql.SQLException;
 @WebServlet("/userDelete")
 public class UserDeleteServlet extends HttpServlet {
 
-    private UserService service = new UserService();
+    private UserService service = UserService.getUserService(ConnectionProvider.getMysqlConnection());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,17 +27,13 @@ public class UserDeleteServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try {
-            String login = req.getParameter("login");
-            String password = req.getParameter("password");
-            if (service.deleteUser(login, password)) {
-                req.setAttribute("DeleteUserLogin", login);
-            } else {
-                req.setAttribute("wrongRequest", "login/password not valid");
-            }
-            doGet(req, resp);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        String login = req.getParameter("login");
+        String password = req.getParameter("password");
+        if (service.deleteUser(login, password)) {
+            req.setAttribute("DeleteUserLogin", login);
+        } else {
+            req.setAttribute("wrongRequest", "login/password not valid");
         }
+        doGet(req, resp);
     }
 }
