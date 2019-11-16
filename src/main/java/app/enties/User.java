@@ -1,11 +1,23 @@
 package app.enties;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
+@Entity
+@Table (name = "users")
 public class User {
+
+    @Id
+    @Column(name = "login")
     private String login;
+    @Column(name = "password")
     private String password;
+    @Column(name = "name")
     private String name;
+    @Column(name="amount")
     private double amount;
 
     public User() {

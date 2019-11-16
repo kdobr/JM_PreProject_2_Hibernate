@@ -1,71 +1,68 @@
-<%@ page import="app.enties.User" %>
-<%@ page import="java.util.List" %>
-<%@ page language="java" pageEncoding="UTF-8" session="true" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page isELIgnored="false" %>
 <html>
 <head>
     <title>List of users</title>
 </head>
 <body>
 
-
-<% List<User> users = (List<User>) request.getAttribute("users");
-    if (users != null && !users.isEmpty()) {
-        out.println("<ui>");
-        for (User u : users) {
-            out.println("<li>" + u + "</li>");
-        }
-        out.println("<ui>");
-    } else out.println("<p>There are no users yet!</p>");
-    pageContext.setAttribute("data", users.get(0).getName());
-%>
-<p>${requestScope.users[1]}</p>
-<table>
-
-    <tr>
-        <td>Login</td>
-        <td>Password</td>
-        <td>Name</td>
-        <td>Amount</td>
-        <td>Update</td>
-        <td>Delete</td>
-    </tr>
-
-    <c:forEach items="${users}" var="user">
+<div align="center">
+    <form action="userAdd" method="get" id="my_form"></form>
+    <table border="1" cellpadding="3">
         <tr>
-            <c:out value="${data}"/>
-            <td><c:out value="${user.login}"/></td>
-            <td><c:out value="${user.password}"/></td>
-            <td><c:out value="${user.name}"/></td>
-            <td>${user.amount}/></td>
-            <td>
-                <a href="${pageContext.servletContext.contextPath}/edit?id=${user.id}">Edit</a>
-            </td>
-            &nbsp;<td>&nbsp;&nbsp;&nbsp;
-            <a href="${pageContext.servletContext.contextPath}/delete?id=${user.id}">Delete</a>
+            <td>Login</td>
+            <td>Password</td>
+            <td>Name</td>
+            <td>Amount</td>
+            <td>Update</td>
+            <td>Delete</td>
         </tr>
-    </c:forEach>
-</table>
-<button onclick="location.href='/'">User Home Page</button>
-
+        <c:forEach items="${usersList}" var="user">
+            <tr>
+                <td><c:out value="${user.login}"/></td>
+                <td><c:out value="${user.password}"/></td>
+                <td><c:out value="${user.name}"/></td>
+                <td>${user.amount}</td>
+                <td><div align="center">
+                    <form action="${pageContext.servletContext.contextPath}/userDelete" method="get">
+                        <button type="submit" name="login" value="${user.login}" class="btn-link">Delete</button>
+                    </form>
+                </div></td>
+                &nbsp;<td>&nbsp;&nbsp;&nbsp;
+                <a href="${pageContext.servletContext.contextPath}/userUpdate?login=${user.login}&name=${user.name}&amount=${user.amount}">Update</a>
+            </td>
+            </tr>
+        </c:forEach>
+        <tr>
+            <td><input type="text" name="login" form="my_form"></td>
+            <td><input type="text" name="password" form="my_form"></td>
+            <td><input type="text" name="name" form="my_form"></td>
+            <td><input type="number" step="0.01" min="0" lang="en" name="amount" form="my_form"></td>
+            <td>
+                <button type="submit" form="my_form">Add New User</button>
+            </td>
+        </tr>
+    </table>
+    <c:if test="${param.deletedLogin !=null}">
+        <h2> User <c:out value="${param.deletedLogin}"/> deleted </h2>
+    </c:if>
+    <c:if test="${param.addUserLogin !=null}">
+        <h2> User <c:out value="${param.addUserLogin}"/> added </h2>
+    </c:if>
+    <c:if test="${param.wrongRequest !=null}">
+        <h2> User <c:out value="${param.wrongRequest}"/> not added - already exist! </h2>
+    </c:if>
+    <c:if test="${param.updatedLogin !=null}">
+        <h2> User <c:out value="${param.addUserLogin}"/> updated </h2>
+    </c:if>
+    <c:if test="${param.wrongUpdate !=null}">
+        <h2> User <c:out value="${param.wrongRequest}"/> not updated - login/password wrong! </h2>
+    </c:if>
+    <br>
+    <button onclick="location.href='/list'">Home</button>
+</div>
 </body>
 </html>
 
-
-<%--
-<%
-    pageContext.setAttribute("name", "Tom");
-%>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>JSP Application</title>
-</head>
-<body>
-<p>Name: ${name}</p>
-</body>
-</html>
---%>
 
