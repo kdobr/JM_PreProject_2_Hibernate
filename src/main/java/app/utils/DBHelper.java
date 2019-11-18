@@ -1,24 +1,18 @@
 package app.utils;
 
 import app.enties.User;
-import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import java.sql.Connection;
 
 public class DBHelper {
 
-    private static SessionFactory sessionFactory;
-
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            sessionFactory = createSessionFactory();
-        }
-        return sessionFactory;
+    public static Configuration getConfiguration() {
+        return new Configuration().configure("hibernate.cfg.xml")
+                .addAnnotatedClass(User.class);
     }
 
-    private static SessionFactory createSessionFactory() {
-
-        return new Configuration().configure("hibernate.cfg.xml")
-                .addAnnotatedClass(User.class)
-                .buildSessionFactory();
+    public static Connection getConnection() {
+        return ConnectionProvider.getMysqlConnection();
     }
 }
